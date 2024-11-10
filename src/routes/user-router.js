@@ -25,7 +25,6 @@ router.put('/:id', UserValidateId, UserController.update);
 router.delete('/:id', UserValidateId, UserController.delete);
 
 // login user
-
 router.post('/login', UserController.login);
 
 
