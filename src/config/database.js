@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const dbconnect = async() => {
     try {
-        const url = "mongodb+srv://vitor:wCo2y4cElZZ9nVSC@qualiot.tjzad.mongodb.net/?retryWrites=true&w=majority&appName=qualiot"
+        const url = "mongodb+srv://vitor:I5M2Xa4KanrV9FFD@qualiot.tjzad.mongodb.net/?retryWrites=true&w=majority&appName=qualiot"
 
         await mongoose.connect(url);
 

@@ -6,15 +6,9 @@ const database = require('./config/database');
 const router = require('./routes/router');
 const cors = require('cors');
 
-
-
 app.use(cors());
 app.use(express.json());
 app.use('/', router);
-
-
-
-
 
 app.listen(PORT, async() => {
     try {
