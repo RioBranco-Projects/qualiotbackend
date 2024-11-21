@@ -93,7 +93,10 @@ const UserService = {
         _id : user._id
       }, process.env.SECRET, {expiresIn : '1h'});
 
-      return token
+      return {
+        token,
+        nome : user.nome
+      }
 
 
     } catch (error) {

@@ -3,10 +3,7 @@ const mongoose = require('mongoose');
 
 const dbconnect = async() => {
     try {
-        const HOST_DB = process.env.HOST_DB;
-        const PASS_DB = process.env.PASS_DB;
-
-        const url = `mongodb+srv://${HOST_DB}:${PASS_DB}@qualiotdb.6l0gn.mongodb.net/?retryWrites=true&w=majority&appName=qualiotdb`
+        const url = "mongodb+srv://vitor:I5M2Xa4KanrV9FFD@qualiot.tjzad.mongodb.net/?retryWrites=true&w=majority&appName=qualiot"
 
         await mongoose.connect(url);
 
