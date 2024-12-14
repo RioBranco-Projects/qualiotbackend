@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const UserController = require('../controllers/user-controller');
-const { UserValidate, UserValidateId } = require('../middlewares/user-validate');
+const { UserValidate, UserValidateID} = require('../middlewares/user-validate');
 const router = Router();
 
 
@@ -14,15 +14,15 @@ router.get('/', UserController.getAll);
 
 
 // getOne user
-router.get('/:id', UserValidateId, UserController.getOne);
+router.get('/:id', UserValidateID, UserController.getOne);
 
 
 // update user
-router.put('/:id', UserValidateId, UserController.update);
+router.put('/:id', UserValidateID, UserController.update);
 
 
 // delete user
-router.delete('/:id', UserValidateId, UserController.delete);
+router.delete('/:id', UserValidateID, UserController.delete);
 
 // login user
 router.post('/login', UserController.login);

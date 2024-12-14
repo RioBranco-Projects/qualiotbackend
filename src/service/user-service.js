@@ -1,29 +1,57 @@
 const User = require("../models/User");
-const jwt = require('jsonwebtoken');
-
+const jwt = require("jsonwebtoken");
 
 const UserService = {
-  create: async (data) => {
+  create: async (dataUser) => {
     try {
-      const existeEmail = await User.findOne({ email: data.email });
-      console.log(existeEmail);
-
-      if (existeEmail) {
-        return null;
+      // Validar se existe ja o email
+      const existEmail = await User.findOne({ email: dataUser.email });
+      if (existEmail) {
+        return {
+          code: 400,
+          error: {
+            message: "Email already exists",
+          },
+        };
       }
 
-      return await User.create(data);
+      // Criando o usuario
+      const user = await User.create(dataUser);
+
+      // Criando o token de login
+      const token = await jwt.sign(
+        {
+          _id: user._id,
+          email: user.email,
+        },
+        process.env.SECRET
+      );
+
+      return {
+        code: 201,
+        message: "User created",
+        user: user,
+        token: token,
+      };
+
+      // return await User.create(data);
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
   getAll: async () => {
     try {
-      return await User.find();
+      const users = await User.find();
+
+      return {
+        code: 200,
+        message: "Users finded",
+        user: users,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
   getOne: async (id) => {
@@ -31,79 +59,111 @@ const UserService = {
       const user = await User.findById(id);
 
       if (!user) {
-        return null;
-      }
-
-      return user;
-    } catch (error) {
-      console.error(error);
-      throw new Error("Erro, contate o suporte");
-    }
-  },
-  update: async (id, data) => {
-    try {
-      // Validando se ja existe esse email
-      const existeEmail = await User.findOne({ email: data.email });
-      if (existeEmail) {
         return {
-          error: true,
-          msg: "Email ja cadastrado",
+          code: 404,
+          error: {
+            message: "User not found",
+          },
         };
       }
 
-      const user = await User.findById(id);
-      if (!user) {
-        return null;
-      }
-
-      return await user.updateOne(data);
+      return {
+        code: 200,
+        message: "User finded",
+        user: user,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
+    }
+  },
+  update: async (id, dataUser) => {
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        return {
+          code: 404,
+          error: {
+            message: "User not found",
+          },
+        };
+      }
+      // Validar se existe ja o email
+      const existEmail = await User.findOne({ email: dataUser.email });
+      if (existEmail) {
+        return {
+          code: 400,
+          error: {
+            message: "Email already exists",
+          },
+        };
+      }
+
+      await user.updateOne(dataUser);
+
+      return {
+        code: 200,
+        message: "User update",
+        user: user,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
     }
   },
   delete: async (id) => {
     try {
       const user = await User.findById(id);
-
       if (!user) {
-        return null;
+        return {
+          code: 404,
+          error: {
+            message: "User not found",
+          },
+        };
       }
 
-      return await user.deleteOne();
+      await user.deleteOne();
+
+      return {
+        code: 200,
+        message: "User deleted",
+        user: user,
+      };
     } catch (error) {
       console.error(error);
       throw new Error("Erro, contate o suporte");
     }
   },
-  login : async (data) => {
+  login: async (data) => {
     try {
-
       const user = await User.findOne({
-        email : data.email,
-        password : data.password
-      })
+        email: data.email,
+        password: data.password,
+      });
 
-      if(!user){
-        return null
+      if (!user) {
+        return null;
       }
 
-      const token = await jwt.sign({
-        email : user.email,
-        _id : user._id
-      }, process.env.SECRET, {expiresIn : '1h'});
+      const token = await jwt.sign(
+        {
+          email: user.email,
+          _id: user._id,
+        },
+        process.env.SECRET,
+        { expiresIn: "1h" }
+      );
 
       return {
         token,
-        nome : user.nome
-      }
-
-
+        nome: user.nome,
+      };
     } catch (error) {
       console.error(error);
       throw new Error("Erro, contate o suporte");
     }
-  }
+  },
 };
 
 module.exports = UserService;

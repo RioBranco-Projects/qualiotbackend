@@ -3,65 +3,102 @@ const Produto = require("../models/Produto");
 const ProdutoService = {
   create: async (data, idUsuario) => {
     try {
-      data.userId = idUsuario;
+      data._idUser = idUsuario;
 
-      const produto = await Produto.create(data);
-      return produto;
+      const product = await Produto.create(data);
+      return {
+        code: 201,
+        message: "Product created",
+        product: product,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
   getAll: async (idUsuario) => {
     try {
-      const produtos = await Produto.find({ userId: idUsuario });
+      const product = await Produto.find({ _idUser: idUsuario });
 
-      return produtos;
+      return {
+        code: 200,
+        message: "Products finded",
+        product: product,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
   getOne: async (id, idUsuario) => {
     try {
-      const produto = await Produto.findOne({ _id: id, userId: idUsuario });
+      const product = await Produto.findOne({ _id: id, _idUser: idUsuario });
 
-      if (!produto) {
-        return null;
+      if (!product) {
+        return {
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
       }
 
-      return produto;
+      return {
+        code: 200,
+        message: "Product finded",
+        product: product,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
   update: async (id, idUsuario, data) => {
     try {
-      const produto = await Produto.findOne({ _id: id, userId: idUsuario });
+      const product = await Produto.findOne({ _id: id, _idUser: idUsuario });
 
-      if (!produto) {
-        return null;
+      if (!product) {
+        return {
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
       }
 
-      return await produto.updateOne(data);
+      await product.updateOne(data);
+
+      return {
+        code: 200,
+        message: "Product updated",
+        product: product,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
   delete: async (id, idUsuario) => {
     try {
-      const produto = await Produto.findOne({ _id: id, userId: idUsuario });
+      const product = await Produto.findOne({ _id: id, _idUser: idUsuario });
 
-      if (!produto) {
-        return null;
+      if (!product) {
+        return {
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
       }
-
-      return await produto.deleteOne();
+      await product.deleteOne();
+      return {
+        code: 200,
+        message: "Product deleted",
+        product: product,
+      };
     } catch (error) {
       console.error(error);
-      throw new Error("Erro, contate o suporte");
+      throw new Error(error.message);
     }
   },
 };

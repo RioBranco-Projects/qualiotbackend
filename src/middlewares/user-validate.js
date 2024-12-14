@@ -1,52 +1,93 @@
-const UserValidate = (req,res,next) => {
-    const {nome, email, password} = req.body;
+const { isEmail, isMongoID } = require("../utils/ValidationsUtils");
 
-    if(!nome || typeof nome != 'string'){
-        return res.status(400).json({
-            msg : "Valide seus dados"
-        })
-    }
+const UserValidate = async (req, res, next) => {
+  const { name, email, password } = req.body;
 
-    if(!email || typeof email != 'string'){
-        return res.status(400).json({
-            msg : "Valide seus dados"
-        })
-    }
+  if (!name) {
+    return res.status(400).json({
+      code: 400,
+      method: req.method,
+      message: "Error, while valide the User",
+      details: {
+        cause: "The name is required",
+      },
+    });
+  }
 
-    if(!password || typeof password != 'string'){
-        return res.status(400).json({
-            msg : "Valide seus dados"
-        })
-    }
+   // Validando o email
+   if (!email) {
+    return res.status(400).json({
+      code: 400,
+      method: req.method,
+      message: "Error, while valide the User",
+      details: {
+        cause: "The email is required",
+      },
+    });
+  }
+  const isEmailValid = await isEmail(email);
+  if (!isEmailValid) {
+    return res.status(400).json({
+      code: 400,
+      method: req.method,
+      message: "Error, while valide the User",
+      details: {
+        cause: "The email not valid",
+      },
+    });
+  }
 
-    const data = {
-        nome : nome,
-        email : email,
-        password : password
-    }
+  if (!password) {
+    return res.status(400).json({
+      code: 400,
+      method: req.method,
+      message: "Error, while valide the User",
+      details: {
+        cause: "The password is required",
+      },
+    });
+  }
+
+  
+
+  req.user = {
+    name,
+    email,
+    password
+  }
+  return next();
+};
+
+const UserValidateID = async (req, res, next) => {
+    try {
+
+        const isValidId = await isMongoID(req.params.id);
     
-    req.user = data;
-    return next();
-}
-
-
-const UserValidateId = (req,res,next) => {
-    const {id} = req.params;
-
-    if (!id || typeof id != "string") {
-        return res.status(400).json({
-          msg: "Valide seus parametros",
+        if (!isValidId.success) {
+          return res.status(isValidId.error.code).json({
+            code: isValidId.error.code,
+            method: req.method,
+            message: "Invalid user data",
+            details: {
+              cause: isValidId.error.details.cause,
+            },
+          });
+        }
+    
+        return next();
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+          error: {
+            code: 500,
+            method: req.method,
+            message: "Error, while valide the user",
+            details: {
+              cause: error.message,
+            },
+          },
         });
-      }
-    
-      // Validando se o id enviado esta correto, pos o id do mongodb e composto por 24 caracteres
-      if (id.length > 24 || id.length < 24) {
-        return res.status(400).json({
-          msg: "Valide seus parametros",
-        });
-      }
-    
-      return next();
-}
+    }
+};
 
-module.exports = {UserValidate, UserValidateId};
+module.exports = { UserValidate, UserValidateID };

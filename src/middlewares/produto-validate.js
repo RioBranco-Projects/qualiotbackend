@@ -1,54 +1,96 @@
-const ProdutoValidate = (req,res,next) => {
-    const {nome, marca, modelo} = req.body;
+const { isMongoID } = require("../utils/ValidationsUtils");
 
+const ProdutoValidate = (req, res, next) => {
+  try {
+    const { name, description } = req.body;
 
-    if(!nome || typeof nome != 'string'){
-        return res.status(400).json({
-            msg : "Nome invalido"
-        })
+    if (!name) {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Error, while valide the product",
+        details: {
+          cause: "The name is required",
+        },
+      });
     }
 
-    if(!marca || typeof marca != 'string'){
-        return res.status(400).json({
-            msg : "Marca invalida"
-        })
-    }
+    // if (!_idUser) {
+    //   return res.status(400).json({
+    //     code: 400,
+    //     method: req.method,
+    //     message: "Error, while valide the product",
+    //     details: {
+    //       cause: "The _idUser is required",
+    //     },
+    //   });
+    // }
 
-    if(!modelo || typeof modelo != 'string'){
-        return res.status(400).json({
-            msg : "Modelo invalido"
-        })
-    }
+    // // Validando se o id enviado e um mongoID
+    // const isValidId = isMongoID(_idUser);
 
+    // if (!isValidId.success) {
+    //   return res.status(isValidId.error.code).json({
+    //     code: isValidId.error.code,
+    //     method: req.method,
+    //     message: "Invalid product data",
+    //     details: {
+    //       cause: isValidId.error.details.cause,
+    //     },
+    //   });
+    // }
 
-    const data = {
-        nome : nome,
-        marca : marca,
-        modelo : modelo
-    }
+    req.product = {
+      name,
+      description,
+      //   _idUser,
+    };
 
-    req.produto = data;
     return next();
-}
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: {
+        code: 500,
+        method: req.method,
+        message: "Error, while valide the product",
+        details: {
+          cause: error.message,
+        },
+      },
+    });
+  }
+};
 
+const ProductValidateID = async (req, res, next) => {
+  try {
+    const isValidId = await isMongoID(req.params.id);
 
-const ProdutoValidateId = (req,res,next) => {
-    const {id} = req.params;
+    if (!isValidId.success) {
+      return res.status(isValidId.error.code).json({
+        code: isValidId.error.code,
+        method: req.method,
+        message: "Invalid product data",
+        details: {
+          cause: isValidId.error.details.cause,
+        },
+      });
+    }
 
-    if (!id || typeof id != "string") {
-        return res.status(400).json({
-          msg: "Valide seus parametros",
-        });
-      }
-    
-      // Validando se o id enviado esta correto, pos o id do mongodb e composto por 24 caracteres
-      if (id.length > 24 || id.length < 24) {
-        return res.status(400).json({
-          msg: "Valide seus parametros",
-        });
-      }
-    
-      return next();
-}
+    return next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: {
+        code: 500,
+        method: req.method,
+        message: "Error, while valide the product",
+        details: {
+          cause: error.message,
+        },
+      },
+    });
+  }
+};
 
-module.exports = {ProdutoValidate, ProdutoValidateId};
+module.exports = { ProdutoValidate, ProductValidateID };

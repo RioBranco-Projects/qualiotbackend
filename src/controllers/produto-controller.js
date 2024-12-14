@@ -3,102 +3,182 @@ const ProdutoService = require("../service/produto-service");
 const ProdutoController = {
   create: async (req, res) => {
     try {
-      const produto = await ProdutoService.create(req.produto, req.user._id);
-      return res.status(200).json({
-        msg: "Produto criado com sucesso !",
-        produto,
+      const product = await ProdutoService.create(req.product, req.user._id);
+
+      if (product.error) {
+        return res.status(product.code).json({
+          code: product.code,
+          message: "Error, while create product",
+          details: {
+            controller: "ProductController",
+            cause: product.error.message,
+          },
+        });
+      }
+
+      return res.status(product.code).json({
+        code: product.code,
+        message: product.message,
+        product: product.product,
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        msg: "Erro, contate o suporte",
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while creating the product",
+          details: {
+            controller: "ProductController",
+            cause: error.message,
+          },
+        },
       });
     }
   },
   getAll: async (req, res) => {
     try {
-      const produtos = await ProdutoService.getAll(req.user._id);
+      const product = await ProdutoService.getAll(req.user._id);
+      if (product.error) {
+        return res.status(product.code).json({
+          code: product.code,
+          message: "Error, while getAll product",
+          details: {
+            controller: "ProductController",
+            cause: product.error.message,
+          },
+        });
+      }
 
-      return res.status(200).json({
-        msg: "Todos os produtos",
-        produtos,
+      return res.status(product.code).json({
+        code: product.code,
+        message: product.message,
+        product: product.product,
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        msg: "Erro, contate o suporte",
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while getAll the product",
+          details: {
+            controller: "ProductController",
+            cause: error.message,
+          },
+        },
       });
     }
   },
   getOne: async (req, res) => {
     try {
-      const produto = await ProdutoService.getOne(req.params.id, req.user._id);
-
-      if (!produto) {
-        return res.status(404).json({
-          msg: "Produto não encontrado",
+      const product = await ProdutoService.getOne(req.params.id, req.user._id);
+      if (product.error) {
+        return res.status(product.code).json({
+          code: product.code,
+          message: "Error, while getOne product",
+          details: {
+            controller: "ProductController",
+            cause: product.error.message,
+          },
         });
       }
-      return res.status(200).json({
-        msg: "Produto encontrado",
-        produto,
+
+      return res.status(product.code).json({
+        code: product.code,
+        message: product.message,
+        product: product.product,
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        msg: "Erro, contate o suporte",
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while getOne the product",
+          details: {
+            controller: "ProductController",
+            cause: error.message,
+          },
+        },
       });
     }
   },
   update: async (req, res) => {
     try {
       const data = {
-        nome: req.body.nome,
-        marca: req.body.marca,
-        modelo: req.body.modelo,
+        name: req.body.name,
+        description: req.body.description,
       };
 
-      const produto = await ProdutoService.update(
+      const product = await ProdutoService.update(
         req.params.id,
         req.user._id,
         data
       );
 
-      if (!produto) {
-        return res.status(404).json({
-          msg: "Produto não encontrado",
+      if (product.error) {
+        return res.status(product.code).json({
+          code: product.code,
+          message: "Error, while update product",
+          details: {
+            controller: "ProductController",
+            cause: product.error.message,
+          },
         });
       }
 
-      return res.status(200).json({
-        msg: "Produto atualizado com sucesso",
-        produto,
+      return res.status(product.code).json({
+        code: product.code,
+        message: product.message,
+        product: product.product,
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        msg: "Erro, contate o suporte",
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while update the product",
+          details: {
+            controller: "ProductController",
+            cause: error.message,
+          },
+        },
       });
     }
   },
   delete: async (req, res) => {
     try {
-      const produto = await ProdutoService.delete(req.params.id, req.user._id);
-
-      if (!produto) {
-        return res.status(404).json({
-          msg: "Produto não encontrado",
+      const product = await ProdutoService.delete(req.params.id, req.user._id);
+      if (product.error) {
+        return res.status(product.code).json({
+          code: product.code,
+          message: "Error, while delete product",
+          details: {
+            controller: "ProductController",
+            cause: product.error.message,
+          },
         });
       }
 
-      return res.status(200).json({
-        msg: "Produto deletado com sucesso",
-        produto,
+      return res.status(product.code).json({
+        code: product.code,
+        message: product.message,
+        product: product.product,
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        msg: "Erro, contate o suporte",
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while delete the product",
+          details: {
+            controller: "ProductController",
+            cause: error.message,
+          },
+        },
       });
     }
   },
