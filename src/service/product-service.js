@@ -1,11 +1,25 @@
-const Produto = require("../models/Produto");
+const Category = require("../models/Category");
+const Product = require("../models/Product");
 
-const ProdutoService = {
+const ProductService = {
   create: async (data, idUsuario) => {
     try {
       data._idUser = idUsuario;
 
-      const product = await Produto.create(data);
+      const product = await Product.create(data);
+      const categorys = [
+        "Objeto",
+        "Sensores",
+        "Transmissão",
+        "Cloud",
+        "Segurança",
+        "Análise",
+        "Uso",
+      ];
+
+      for (const category of categorys) {
+        await Category.create({ _idProduct: product._id, name: category });
+      }
       return {
         code: 201,
         message: "Product created",
@@ -18,7 +32,7 @@ const ProdutoService = {
   },
   getAll: async (idUsuario) => {
     try {
-      const product = await Produto.find({ _idUser: idUsuario });
+      const product = await Product.find({ _idUser: idUsuario });
 
       return {
         code: 200,
@@ -32,7 +46,7 @@ const ProdutoService = {
   },
   getOne: async (id, idUsuario) => {
     try {
-      const product = await Produto.findOne({ _id: id, _idUser: idUsuario });
+      const product = await Product.findOne({ _id: id, _idUser: idUsuario });
 
       if (!product) {
         return {
@@ -55,7 +69,7 @@ const ProdutoService = {
   },
   update: async (id, idUsuario, data) => {
     try {
-      const product = await Produto.findOne({ _id: id, _idUser: idUsuario });
+      const product = await Product.findOne({ _id: id, _idUser: idUsuario });
 
       if (!product) {
         return {
@@ -80,7 +94,7 @@ const ProdutoService = {
   },
   delete: async (id, idUsuario) => {
     try {
-      const product = await Produto.findOne({ _id: id, _idUser: idUsuario });
+      const product = await Product.findOne({ _id: id, _idUser: idUsuario });
 
       if (!product) {
         return {
@@ -103,4 +117,4 @@ const ProdutoService = {
   },
 };
 
-module.exports = ProdutoService;
+module.exports = ProductService;

@@ -1,26 +1,26 @@
 const { Router } = require("express");
 const TokenAuthenticate = require("../middlewares/token-authenticate");
-const ProdutoController = require("../controllers/produto-controller");
+const ProductController = require("../controllers/product-controller");
 
 const {
-  ProdutoValidate,
+  ProductValidate,
   ProductValidateID,
-} = require("../middlewares/produto-validate");
+} = require("../middlewares/product-validate");
 
 const router = Router();
 
 // Create produto
-router.post("/", TokenAuthenticate, ProdutoValidate, ProdutoController.create);
+router.post("/", TokenAuthenticate, ProductValidate, ProductController.create);
 
 // GetAll produto
-router.get("/", TokenAuthenticate, ProdutoController.getAll);
+router.get("/", TokenAuthenticate, ProductController.getAll);
 
 // GetOne produto
 router.get(
   "/:id",
   TokenAuthenticate,
   ProductValidateID,
-  ProdutoController.getOne
+  ProductController.getOne
 );
 
 // Update produto
@@ -28,7 +28,7 @@ router.put(
   "/:id",
   TokenAuthenticate,
   ProductValidateID,
-  ProdutoController.update
+  ProductController.update
 );
 
 // Delete produto
@@ -36,7 +36,7 @@ router.delete(
   "/:id",
   TokenAuthenticate,
   ProductValidateID,
-  ProdutoController.delete
+  ProductController.delete
 );
 
 module.exports = router;

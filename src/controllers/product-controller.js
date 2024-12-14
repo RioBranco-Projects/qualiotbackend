@@ -1,9 +1,9 @@
-const ProdutoService = require("../service/produto-service");
+const ProductService = require("../service/product-service");
 
 const ProdutoController = {
   create: async (req, res) => {
     try {
-      const product = await ProdutoService.create(req.product, req.user._id);
+      const product = await ProductService.create(req.product, req.user._id);
 
       if (product.error) {
         return res.status(product.code).json({
@@ -38,7 +38,7 @@ const ProdutoController = {
   },
   getAll: async (req, res) => {
     try {
-      const product = await ProdutoService.getAll(req.user._id);
+      const product = await ProductService.getAll(req.user._id);
       if (product.error) {
         return res.status(product.code).json({
           code: product.code,
@@ -72,7 +72,7 @@ const ProdutoController = {
   },
   getOne: async (req, res) => {
     try {
-      const product = await ProdutoService.getOne(req.params.id, req.user._id);
+      const product = await ProductService.getOne(req.params.id, req.user._id);
       if (product.error) {
         return res.status(product.code).json({
           code: product.code,
@@ -111,7 +111,7 @@ const ProdutoController = {
         description: req.body.description,
       };
 
-      const product = await ProdutoService.update(
+      const product = await ProductService.update(
         req.params.id,
         req.user._id,
         data
@@ -150,7 +150,7 @@ const ProdutoController = {
   },
   delete: async (req, res) => {
     try {
-      const product = await ProdutoService.delete(req.params.id, req.user._id);
+      const product = await ProductService.delete(req.params.id, req.user._id);
       if (product.error) {
         return res.status(product.code).json({
           code: product.code,
