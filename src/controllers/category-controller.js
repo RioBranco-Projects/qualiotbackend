@@ -3,7 +3,7 @@ const CategoryService = require("../service/category-service");
 const CategoryController = {
   create: async (req, res) => {
     try {
-      const category = await CategoryService.create(req.category);
+      const category = await CategoryService.create(req.category, req.user);
 
       if (category.error) {
         return res.status(category.code).json({
@@ -36,44 +36,9 @@ const CategoryController = {
       });
     }
   },
-  getAll: async (req, res) => {
-    try {
-      const category = await CategoryService.create(req.category);
-
-      if (category.error) {
-        return res.status(category.code).json({
-          code: category.code,
-          message: "Error, while getAll category",
-          details: {
-            controller: "CategoryController",
-            cause: category.error.message,
-          },
-        });
-      }
-
-      return res.status(category.code).json({
-        code: category.code,
-        message: category.message,
-        category: category.category,
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        error: {
-          code: 500,
-          method: req.method,
-          message: "Error, while getAll the category",
-          details: {
-            controller: "ProductController",
-            cause: error.message,
-          },
-        },
-      });
-    }
-  },
   getOne: async (req, res) => {
     try {
-      const category = await CategoryService.create(req.category);
+      const category = await CategoryService.getOne(req.params.id);
 
       if (category.error) {
         return res.status(category.code).json({
@@ -108,7 +73,13 @@ const CategoryController = {
   },
   update: async (req, res) => {
     try {
-      const category = await CategoryService.create(req.category);
+      const dataUpdate = {
+        _id: req.params.id,
+        name: req.body.name,
+        _idProduct: req.body._idProduct,
+      };
+
+      const category = await CategoryService.update(dataUpdate, req.user);
 
       if (category.error) {
         return res.status(category.code).json({
@@ -143,7 +114,7 @@ const CategoryController = {
   },
   delete: async (req, res) => {
     try {
-      const category = await CategoryService.create(req.category);
+      const category = await CategoryService.delete(req.params.id, req.user);
 
       if (category.error) {
         return res.status(category.code).json({
