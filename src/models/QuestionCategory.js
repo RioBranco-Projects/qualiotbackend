@@ -11,6 +11,10 @@ const schemaQuestionCategory = Schema({
     type: String,
     required: true,
   },
+  note: {
+    type: Number,
+    required: false,
+  },
   _idCategory: {
     type: String,
     required: true,

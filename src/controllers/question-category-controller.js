@@ -120,6 +120,7 @@ const QuestionCategoryController = {
         title: req.body.title,
         announced: req.body.announced,
         _idCategory: req.body._idCategory,
+        note: req.body.note,
       };
 
       const questionCategory = await QuestionCategoryService.update(
