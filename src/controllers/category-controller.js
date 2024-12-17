@@ -29,7 +29,7 @@ const CategoryController = {
           method: req.method,
           message: "Error, while crerate the category",
           details: {
-            controller: "ProductController",
+            controller: "CategoryController",
             cause: error.message,
           },
         },
@@ -64,7 +64,7 @@ const CategoryController = {
           method: req.method,
           message: "Error, while getOne the category",
           details: {
-            controller: "ProductController",
+            controller: "CategoryController",
             cause: error.message,
           },
         },
@@ -105,7 +105,7 @@ const CategoryController = {
           method: req.method,
           message: "Error, while update the category",
           details: {
-            controller: "ProductController",
+            controller: "CategoryController",
             cause: error.message,
           },
         },
@@ -140,7 +140,7 @@ const CategoryController = {
           method: req.method,
           message: "Error, while delete the category",
           details: {
-            controller: "ProductController",
+            controller: "CategoryController",
             cause: error.message,
           },
         },
@@ -175,7 +175,7 @@ const CategoryController = {
           method: req.method,
           message: "Error, while getByProduct the category",
           details: {
-            controller: "ProductController",
+            controller: "CategoryController",
             cause: error.message,
           },
         },
