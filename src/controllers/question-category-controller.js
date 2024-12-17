@@ -40,8 +40,10 @@ const QuestionCategoryController = {
   },
   getByCategory: async (req, res) => {
     try {
-      const questionCategory = await QuestionCategoryService.create(
-        req.questionCategory
+      console.log("caiu aq");
+
+      const questionCategory = await QuestionCategoryService.getByCategory(
+        req.params.id
       );
 
       if (questionCategory.error) {
@@ -77,8 +79,8 @@ const QuestionCategoryController = {
   },
   getOne: async (req, res) => {
     try {
-      const questionCategory = await QuestionCategoryService.create(
-        req.questionCategory
+      const questionCategory = await QuestionCategoryService.getOne(
+        req.params.id
       );
 
       if (questionCategory.error) {
@@ -114,8 +116,15 @@ const QuestionCategoryController = {
   },
   update: async (req, res) => {
     try {
-      const questionCategory = await QuestionCategoryService.create(
-        req.questionCategory
+      const dataUpdate = {
+        title: req.body.title,
+        announced: req.body.announced,
+        _idCategory: req.body._idCategory,
+      };
+
+      const questionCategory = await QuestionCategoryService.update(
+        req.params.id,
+        dataUpdate
       );
 
       if (questionCategory.error) {
@@ -151,8 +160,8 @@ const QuestionCategoryController = {
   },
   delete: async (req, res) => {
     try {
-      const questionCategory = await QuestionCategoryService.create(
-        req.questionCategory
+      const questionCategory = await QuestionCategoryService.delete(
+        req.params.id
       );
 
       if (questionCategory.error) {
@@ -187,7 +196,5 @@ const QuestionCategoryController = {
     }
   },
 };
-
-
 
 module.exports = QuestionCategoryController;

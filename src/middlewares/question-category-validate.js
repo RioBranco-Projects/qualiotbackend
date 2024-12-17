@@ -1,6 +1,8 @@
+const { isMongoID } = require("../utils/ValidationsUtils");
+
 const QuestionCategoryValidate = (req, res, next) => {
   try {
-    const { title, annouced, _idCategory } = req.body;
+    const { title, announced, _idCategory } = req.body;
 
     if (!title) {
       return res.status(400).json({
@@ -13,13 +15,13 @@ const QuestionCategoryValidate = (req, res, next) => {
       });
     }
 
-    if (!annouced) {
+    if (!announced) {
       return res.status(400).json({
         code: 400,
         method: req.method,
         message: "Error, while valide the question category",
         details: {
-          cause: "The annouced is required",
+          cause: "The announced is required",
         },
       });
     }
@@ -50,8 +52,8 @@ const QuestionCategoryValidate = (req, res, next) => {
     }
 
     req.questionCategory = {
-      name,
-      annouced,
+      title,
+      announced,
       _idCategory,
     };
 
@@ -71,6 +73,51 @@ const QuestionCategoryValidate = (req, res, next) => {
   }
 };
 
+const QuestionCategoryValidateID = async (req, res, next) => {
+  try {
+
+    if(!req.params.id){
+      return res.status(isValidId.error.code).json({
+        code: isValidId.error.code,
+        method: req.method,
+        message: "Invalid QuestionCategory data",
+        details: {
+          cause: "This id is required",
+        },
+      });
+    }
+
+    const isValidId = await isMongoID(req.params.id);
 
 
-module.exports = {QuestionCategoryValidate}
+    
+    if (!isValidId.success) {
+      return res.status(isValidId.error.code).json({
+        code: isValidId.error.code,
+        method: req.method,
+        message: "Invalid QuestionCategory data",
+        details: {
+          cause: isValidId.error.details.cause,
+        },
+      });
+    }
+
+    return next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: {
+        code: 500,
+        method: req.method,
+        message: "Error, while valide the QuestionCategoryID",
+        details: {
+          cause: error.message,
+        },
+      },
+    });
+  }
+};
+
+
+
+module.exports = {QuestionCategoryValidate, QuestionCategoryValidateID}

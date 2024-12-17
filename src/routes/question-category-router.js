@@ -3,6 +3,7 @@ const QuestionCategoryController = require("../controllers/question-category-con
 const TokenAuthenticate = require("../middlewares/token-authenticate");
 const {
   QuestionCategoryValidate,
+  QuestionCategoryValidateID,
 } = require("../middlewares/question-category-validate");
 const router = Router();
 
@@ -18,14 +19,25 @@ router.post(
 router.get(
   "/get-by-category/:id",
   TokenAuthenticate,
+  QuestionCategoryValidateID,
   QuestionCategoryController.getByCategory
 );
 
 // GetOneQuestion
-router.get("/:id", TokenAuthenticate, QuestionCategoryController.getOne);
+router.get(
+  "/:id",
+  TokenAuthenticate,
+  QuestionCategoryValidateID,
+  QuestionCategoryController.getOne
+);
 
 // Update question
-router.put("/:id", TokenAuthenticate, QuestionCategoryController.update);
+router.put(
+  "/:id",
+  TokenAuthenticate,
+  QuestionCategoryValidateID,
+  QuestionCategoryController.update
+);
 
 // Delete question
 router.delete("/:id", TokenAuthenticate, QuestionCategoryController.delete);
