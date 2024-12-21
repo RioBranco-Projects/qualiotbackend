@@ -17,7 +17,12 @@ router.post(
 );
 
 // GetAll justification
-router.get("/", TokenAuthenticate, JustificationQuestionController.getAll);
+router.get(
+  "/get-by-question/:id",
+  TokenAuthenticate,
+  JustificationQuestionValidateID,
+  JustificationQuestionController.getAll
+);
 
 // GetOne justification
 router.get(
@@ -28,7 +33,7 @@ router.get(
 );
 
 // Update justification
-router.update(
+router.put(
   "/:id",
   TokenAuthenticate,
   JustificationQuestionValidateID,

@@ -4,7 +4,7 @@ const JustificationQuestionController = {
   create: async (req, res) => {
     try {
       const justificationQuestion = await JustificationQuestionService.create(
-        req.body,
+        req.justificationQuestion,
         req.user._id
       );
 
@@ -43,7 +43,7 @@ const JustificationQuestionController = {
   getAll: async (req, res) => {
     try {
       const justificationQuestions = await JustificationQuestionService.getAll(
-        req.user._id
+        req.params.id
       );
 
       if (justificationQuestions.error) {
@@ -81,8 +81,7 @@ const JustificationQuestionController = {
   getOne: async (req, res) => {
     try {
       const justificationQuestion = await JustificationQuestionService.getOne(
-        req.params.id,
-        req.user._id
+        req.params.id
       );
 
       if (justificationQuestion.error) {
@@ -120,13 +119,12 @@ const JustificationQuestionController = {
   update: async (req, res) => {
     try {
       const data = {
-        title: req.body.title,
         justification: req.body.justification,
+        _idQuestionCategory: req.body._idQuestionCategory,
       };
 
       const justificationQuestion = await JustificationQuestionService.update(
         req.params.id,
-        req.user._id,
         data
       );
 
@@ -165,8 +163,7 @@ const JustificationQuestionController = {
   delete: async (req, res) => {
     try {
       const justificationQuestion = await JustificationQuestionService.delete(
-        req.params.id,
-        req.user._id
+        req.params.id
       );
 
       if (justificationQuestion.error) {
