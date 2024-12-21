@@ -38,7 +38,7 @@ const ProdutoController = {
   },
   getAll: async (req, res) => {
     try {
-      const product = await ProductService.getAll(req.user._id);
+      const product = await ProductService.getAll(req.user._id, req.query);
       if (product.error) {
         return res.status(product.code).json({
           code: product.code,
@@ -72,7 +72,11 @@ const ProdutoController = {
   },
   getOne: async (req, res) => {
     try {
-      const product = await ProductService.getOne(req.params.id, req.user._id);
+      const product = await ProductService.getOne(
+        req.params.id,
+        req.user._id,
+        req.query
+      );
       if (product.error) {
         return res.status(product.code).json({
           code: product.code,

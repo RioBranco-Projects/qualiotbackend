@@ -10,6 +10,10 @@ const schemaCategory = new Schema({
     type: String,
     required: true,
   },
+  finalGrade: {
+    type: Number,
+    required: false,
+  },
 });
 
 const Category = mongoose.model("Category", schemaCategory);

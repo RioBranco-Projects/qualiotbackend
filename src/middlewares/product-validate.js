@@ -18,7 +18,7 @@ const ProductValidate = (req, res, next) => {
     req.product = {
       name,
       description,
-      finalNote: 0,
+      finalGrade: 0,
     };
 
     return next();

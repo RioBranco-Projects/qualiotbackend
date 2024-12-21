@@ -11,7 +11,7 @@ const schemaQuestionCategory = Schema({
     type: String,
     required: true,
   },
-  note: {
+  grade: {
     type: Number,
     required: false,
   },

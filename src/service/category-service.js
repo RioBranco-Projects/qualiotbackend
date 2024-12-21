@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Produto = require("../models/Product");
+const User = require("../models/User");
 
 const CategoryService = {
   create: async (dataCategory, user) => {
@@ -56,8 +57,9 @@ const CategoryService = {
       throw new Error(error.message);
     }
   },
-  getOne: async (_idCategory) => {
+  getOne: async (_idCategory, query) => {
     try {
+      const { details = false } = query;
       const category = await Category.findById({ _id: _idCategory });
       if (!category) {
         return {
@@ -67,10 +69,55 @@ const CategoryService = {
           },
         };
       }
+
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "Categorys finded",
+          category: category,
+        };
+      }
+
+      const product = await Produto.findById(category._idProduct);
+      if (!product) {
+        return {
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+
+      const user = await User.findById(product._idUser);
+      if (!user) {
+        return {
+          code: 404,
+          error: {
+            message: "User not found",
+          },
+        };
+      }
+
+      const categoryDetail = {
+        _id: category._id,
+        name: category.name,
+        product: {
+          _id: product._id,
+          name: product.name,
+          finalGrade: product.finalGrade,
+          description: product.description,
+          user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+          },
+        },
+      };
+
       return {
         code: 200,
         message: "Categorys finded",
-        category: category,
+        category: categoryDetail,
       };
     } catch (error) {
       console.error(error);
@@ -146,54 +193,50 @@ const CategoryService = {
   },
   delete: async (_idCategory, user) => {
     try {
-
       const category = await Category.findById(_idCategory);
-      if(!category){
+      if (!category) {
         return {
-          code : 404,
-          error : {
-            message : "Category not found"
-          }
-        }
+          code: 404,
+          error: {
+            message: "Category not found",
+          },
+        };
       }
 
       const product = await Produto.findById(category._idProduct);
-      if(!product){
+      if (!product) {
         return {
-          code : 404,
-          error : {
-            message : "Product not found"
-          }
-        }
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
       }
 
-      if(product._idUser !== user._id){
+      if (product._idUser !== user._id) {
         return {
-          code : 401,
-          error : {
-            message : "The product not belongs your"
-          }
-        }
+          code: 401,
+          error: {
+            message: "The product not belongs your",
+          },
+        };
       }
-
 
       await category.deleteOne();
 
-
       return {
-        code : 200,
-        message : "Category deleted",
-        category : category
-      }
-
-
+        code: 200,
+        message: "Category deleted",
+        category: category,
+      };
     } catch (error) {
       console.error(error);
       throw new Error(error.message);
     }
   },
-  getByProduct: async (_idProduct) => {
+  getByProduct: async (_idProduct, query) => {
     try {
+      const { details = false } = query;
       const product = await Produto.findById(_idProduct);
       if (!product) {
         return {
@@ -204,12 +247,49 @@ const CategoryService = {
         };
       }
 
-      const category = await Category.find({ _idProduct: _idProduct });
+      const categorys = await Category.find({ _idProduct: _idProduct });
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "Category finded",
+          category: categorys,
+        };
+      }
+
+      const categorysDetails = [];
+      const user = await User.findById(product._idUser);
+      if (!user) {
+        return {
+          code: 404,
+          error: {
+            message: "User not found",
+          },
+        };
+      }
+      for (const category of categorys) {
+        const categoryDetail = {
+          _id: category._id,
+          name: category.name,
+          product: {
+            _id: product._id,
+            name: product.name,
+            finalGrade: product.finalGrade,
+            description: product.description,
+            user: {
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+            },
+          },
+        };
+
+        categorysDetails.push(categoryDetail);
+      }
 
       return {
         code: 200,
         message: "Category finded",
-        category: category,
+        category: categorysDetails,
       };
     } catch (error) {
       console.error(error);

@@ -40,10 +40,9 @@ const QuestionCategoryController = {
   },
   getByCategory: async (req, res) => {
     try {
-      console.log("caiu aq");
-
       const questionCategory = await QuestionCategoryService.getByCategory(
-        req.params.id
+        req.params.id,
+        req.query
       );
 
       if (questionCategory.error) {

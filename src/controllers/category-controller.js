@@ -38,7 +38,7 @@ const CategoryController = {
   },
   getOne: async (req, res) => {
     try {
-      const category = await CategoryService.getOne(req.params.id);
+      const category = await CategoryService.getOne(req.params.id, req.query);
 
       if (category.error) {
         return res.status(category.code).json({
@@ -149,7 +149,10 @@ const CategoryController = {
   },
   getByProduct: async (req, res) => {
     try {
-      const category = await CategoryService.getByProduct(req.params.id);
+      const category = await CategoryService.getByProduct(
+        req.params.id,
+        req.query
+      );
 
       if (category.error) {
         return res.status(category.code).json({

@@ -11,7 +11,7 @@ const produtoSchema = new Schema({
     type: String,
     required: false,
   },
-  finalNote: {
+  finalGrade: {
     type: Number,
     required: false,
   },

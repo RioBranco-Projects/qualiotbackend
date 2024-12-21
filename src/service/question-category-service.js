@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const QuestionCategory = require("../models/QuestionCategory");
+const CategoryService = require("./category-service");
 
 const QuestionCategoryService = {
   create: async (dataQuestionCategory) => {
@@ -33,8 +34,9 @@ const QuestionCategoryService = {
       throw new Error(error.message);
     }
   },
-  getByCategory: async (_idCategory) => {
+  getByCategory: async (_idCategory, query) => {
     try {
+      const { details = false } = query;
       const category = await Category.findById(_idCategory);
       if (!category) {
         return {
@@ -49,10 +51,38 @@ const QuestionCategoryService = {
         _idCategory: _idCategory,
       });
 
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "Questions find",
+          questionCategory: questions,
+        };
+      }
+
+      const questionsDetails = [];
+      for (const question of questions) {
+        const category = await CategoryService.getOne(
+          question._idCategory,
+          query
+        );
+        if (category.error) {
+          return category;
+        }
+
+        const questionDetail = {
+          _id: question._id,
+          title: question.title,
+          announced: question.announced,
+          category: category.category,
+        };
+
+        questionsDetails.push(questionDetail);
+      }
+
       return {
         code: 200,
         message: "Questions find",
-        questionCategory: questions,
+        questionCategory: questionsDetails,
       };
     } catch (error) {
       console.error(error);
