@@ -79,7 +79,8 @@ const QuestionCategoryController = {
   getOne: async (req, res) => {
     try {
       const questionCategory = await QuestionCategoryService.getOne(
-        req.params.id
+        req.params.id,
+        req.query
       );
 
       if (questionCategory.error) {

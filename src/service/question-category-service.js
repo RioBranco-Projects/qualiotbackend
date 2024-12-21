@@ -89,8 +89,10 @@ const QuestionCategoryService = {
       throw new Error(error.message);
     }
   },
-  getOne: async (_idQuestionCategory) => {
+  getOne: async (_idQuestionCategory, query) => {
     try {
+      const { details = false } = query;
+
       const question = await QuestionCategory.findById(_idQuestionCategory);
       if (!question) {
         return {
@@ -101,10 +103,33 @@ const QuestionCategoryService = {
         };
       }
 
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "Question find",
+          questionCategory: question,
+        };
+      }
+
+      const category = await CategoryService.getOne(
+        question._idCategory,
+        query
+      );
+      if (category.error) {
+        return category;
+      }
+
+      const questionDetail = {
+        _id: question._id,
+        title: question.title,
+        announced: question.announced,
+        category: category.category,
+      };
+
       return {
         code: 200,
         message: "Question find",
-        questionCategory: question,
+        questionCategory: questionDetail,
       };
     } catch (error) {
       console.error(error);

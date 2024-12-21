@@ -1,5 +1,6 @@
 const JustificationQuestion = require("../models/JustificationQuestion");
 const QuestionCategory = require("../models/QuestionCategory");
+const QuestionCategoryService = require("./question-category-service");
 
 const JustificationQuestionService = {
   create: async (dataJustication, user) => {
@@ -47,18 +48,47 @@ const JustificationQuestionService = {
     }
   },
 
-  getAll: async (_idQuestionCategory) => {
+  getAll: async (_idQuestionCategory, query) => {
     try {
+      const { details } = query;
       // Lógica para obter todas as JustificationQuestions
 
       const justifications = await JustificationQuestion.find({
         _idQuestionCategory: _idQuestionCategory,
       });
 
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "All justifications",
+          justificationQuestions: justifications,
+        };
+      }
+
+      const justificationsDetails = [];
+
+      for (const justification of justifications) {
+        const question = await QuestionCategoryService.getOne(
+          justification._idQuestionCategory,
+          query
+        );
+        if (question.error) {
+          return question;
+        }
+
+        const justficationDetail = {
+          _id: justification._id,
+          justification: justification.justification,
+          questionCategory: question.questionCategory,
+        };
+
+        justificationsDetails.push(justficationDetail);
+      }
+
       return {
         code: 200,
         message: "All justifications",
-        justificationQuestions: justifications,
+        justificationQuestions: justificationsDetails,
       };
     } catch (error) {
       console.error(error);
@@ -66,8 +96,10 @@ const JustificationQuestionService = {
     }
   },
 
-  getOne: async (id) => {
+  getOne: async (id, query) => {
     try {
+      const { details } = query;
+
       const justification = await JustificationQuestion.findById(id);
       if (!justification) {
         return {
@@ -78,10 +110,33 @@ const JustificationQuestionService = {
         };
       }
 
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "Justification finded",
+          justificationQuestion: justification,
+        };
+      }
+
+      const question = await QuestionCategoryService.getOne(
+        justification._idQuestionCategory,
+        query
+      );
+
+      if (question.error) {
+        return question;
+      }
+
+      const justficationDetail = {
+        _id: justification._id,
+        justification: justification.justification,
+        questionCategory: question.questionCategory,
+      };
+
       return {
         code: 200,
         message: "Justification finded",
-        justificationQuestion: justification,
+        justificationQuestion: justficationDetail,
       };
 
       // Lógica para obter uma JustificationQuestion por ID

@@ -43,7 +43,8 @@ const JustificationQuestionController = {
   getAll: async (req, res) => {
     try {
       const justificationQuestions = await JustificationQuestionService.getAll(
-        req.params.id
+        req.params.id,
+        req.query
       );
 
       if (justificationQuestions.error) {
@@ -81,7 +82,8 @@ const JustificationQuestionController = {
   getOne: async (req, res) => {
     try {
       const justificationQuestion = await JustificationQuestionService.getOne(
-        req.params.id
+        req.params.id,
+        req.query
       );
 
       if (justificationQuestion.error) {

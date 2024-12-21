@@ -18,8 +18,19 @@ const ProductService = {
         "Uso",
       ];
 
+      const questions = [
+        {
+          title: "Identificação única",
+          announced:
+            "Qual é o identificador único do objeto IoT (por exemplo, número de série ou ID de dispositivo) e como ele é gerado e gerenciado?",
+        },
+      ];
+
       for (const category of categorys) {
-        await Category.create({ _idProduct: product._id, name: category });
+        const categoryCreated = await Category.create({
+          _idProduct: product._id,
+          name: category,
+        });
       }
       return {
         code: 201,
