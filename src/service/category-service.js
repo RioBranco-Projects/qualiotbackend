@@ -47,6 +47,7 @@ const CategoryService = {
 
       const category = await Category.create(dataCategory);
 
+      
       return {
         code: 201,
         message: "Category created",

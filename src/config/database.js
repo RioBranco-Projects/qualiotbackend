@@ -6,6 +6,8 @@ const dbconnect = async () => {
     const url =
       "mongodb+srv://vitor:I5M2Xa4KanrV9FFD@qualiot.tjzad.mongodb.net/?retryWrites=true&w=majority&appName=qualiot";
 
+    // const url = "mongodb://localhost:27017";
+
     await mongoose.connect(url);
 
     console.log("db conectado");
