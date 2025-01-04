@@ -196,6 +196,44 @@ const QuestionCategoryController = {
       });
     }
   },
+  updateGrade: async (req, res) => {
+    try {
+      const questionCategory = await QuestionCategoryService.updateGrade(
+        req.params.id,
+        req.grade
+      );
+
+      if (questionCategory.error) {
+        return res.status(questionCategory.code).json({
+          code: questionCategory.code,
+          message: "Error, while update grade question category",
+          details: {
+            controller: "QuestionCategoryController",
+            cause: questionCategory.error.message,
+          },
+        });
+      }
+
+      return res.status(questionCategory.code).json({
+        code: questionCategory.code,
+        message: questionCategory.message,
+        questionCategory: questionCategory.questionCategory,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while update grade the question category",
+          details: {
+            controller: "QuestionCategoryController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
 };
 
 module.exports = QuestionCategoryController;

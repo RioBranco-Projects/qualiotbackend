@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Product = require("../models/Product");
+const QuestionCategory = require("../models/QuestionCategory");
 const User = require("../models/User");
 
 const ProductService = {
@@ -8,19 +9,11 @@ const ProductService = {
       data._idUser = idUsuario;
 
       const product = await Product.create(data);
-      const categorys = [
-        "Objeto",
-        "Sensores",
-        "Transmissão",
-        "Cloud",
-        "Segurança",
-        "Análise",
-        "Uso",
-      ];
 
       const questions = [
         {
-          Objeto: [
+          category: "Objeto",
+          questions: [
             {
               title: "Identificação única",
               announced:
@@ -28,16 +21,19 @@ const ProductService = {
             },
             {
               title: "Capacidade de Atualização",
-              annouced:
+              announced:
                 "O objeto IoT pode receber atualizações de firmware/software? Como o processo de atualização é gerenciado e seguro?",
             },
             {
               title: "Consumo de Energia",
-              annouced:
+              announced:
                 "Quais são as expectativas de consumo de energia e vida útil da bateria do objeto IoT? Existem modos de economia de energia?",
             },
           ],
-          Sensores: [
+        },
+        {
+          category: "Sensores",
+          questions: [
             {
               title: "Tipos de sensores",
               announced:
@@ -54,7 +50,10 @@ const ProductService = {
                 "Como os sensores lidam com variações ambientais como temperatura, umidade e interferências?",
             },
           ],
-          Transmissao: [
+        },
+        {
+          category: "Transmissão",
+          questions: [
             {
               title: "Protocolos de Comunicação",
               announced:
@@ -71,7 +70,10 @@ const ProductService = {
                 "Existem mecanismos para garantir a entrega de dados em caso de falhas de transmissão?",
             },
           ],
-          Cloud: [
+        },
+        {
+          category: "Cloud",
+          questions: [
             {
               title: "Escalabilidade",
               announced:
@@ -88,7 +90,10 @@ const ProductService = {
                 "Como será garantida a qualidade dos dados armazenados? Quais os mecanismos de validação e limpeza dos dados?",
             },
           ],
-          Seguranca: [
+        },
+        {
+          category: "Segurança",
+          questions: [
             {
               title: "Privacidade e Proteção de Dados",
               announced:
@@ -105,7 +110,10 @@ const ProductService = {
                 "Como o sistema controla o acesso às informações, atribui permissões aos usuários e garante a rastreabilidade das ações realizadas no sistema, visando a segurança e a conformidade?",
             },
           ],
-          Analise: [
+        },
+        {
+          category: "Análise",
+          questions: [
             {
               title: "Processamento de Dados",
               announced:
@@ -122,7 +130,10 @@ const ProductService = {
                 "Quais ferramentas de visualização são utilizadas para representar os dados de forma compreensível para os usuários finais?",
             },
           ],
-          Uso: [
+        },
+        {
+          category: "Uso",
+          questions: [
             {
               title: "Experiência do Usuário",
               announced:
@@ -142,13 +153,23 @@ const ProductService = {
         },
       ];
 
-      for (const category of categorys) {
+      // Percorrendo o array das questões
+      for (const category of questions) {
+        // Criando a categoria com base no array
         const categoryCreated = await Category.create({
           _idProduct: product._id,
-          name: category,
+          name: category.category,
         });
 
-        // Criar a questao
+        // Percorrendo o array das questões
+        for (const questions of category.questions) {
+          // Criando as questões de cada categoria
+          await QuestionCategory.create({
+            title: questions.title,
+            announced: questions.announced,
+            _idCategory: categoryCreated._id,
+          });
+        }
       }
       return {
         code: 201,

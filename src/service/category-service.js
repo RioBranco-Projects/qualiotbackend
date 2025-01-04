@@ -5,6 +5,9 @@ const User = require("../models/User");
 const CategoryService = {
   create: async (dataCategory, user) => {
     try {
+
+      
+
       // Validar se o produto existe
       const product = await Produto.findById(dataCategory._idProduct);
       if (!product) {

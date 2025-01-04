@@ -4,6 +4,7 @@ const TokenAuthenticate = require("../middlewares/token-authenticate");
 const {
   QuestionCategoryValidate,
   QuestionCategoryValidateID,
+  QuestionCategoryValidateUpdateGrade,
 } = require("../middlewares/question-category-validate");
 const router = Router();
 
@@ -40,6 +41,20 @@ router.put(
 );
 
 // Delete question
-router.delete("/:id", TokenAuthenticate, QuestionCategoryController.delete);
+router.delete(
+  "/:id",
+  TokenAuthenticate,
+  QuestionCategoryValidateID,
+  QuestionCategoryController.delete
+);
+
+// Update grade question
+router.patch(
+  "/:id",
+  TokenAuthenticate,
+  QuestionCategoryValidateID,
+  QuestionCategoryValidateUpdateGrade,
+  QuestionCategoryController.updateGrade
+);
 
 module.exports = router;

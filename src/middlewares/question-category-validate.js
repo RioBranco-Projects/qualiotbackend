@@ -75,8 +75,7 @@ const QuestionCategoryValidate = (req, res, next) => {
 
 const QuestionCategoryValidateID = async (req, res, next) => {
   try {
-
-    if(!req.params.id){
+    if (!req.params.id) {
       return res.status(isValidId.error.code).json({
         code: isValidId.error.code,
         method: req.method,
@@ -89,8 +88,6 @@ const QuestionCategoryValidateID = async (req, res, next) => {
 
     const isValidId = await isMongoID(req.params.id);
 
-
-    
     if (!isValidId.success) {
       return res.status(isValidId.error.code).json({
         code: isValidId.error.code,
@@ -118,6 +115,65 @@ const QuestionCategoryValidateID = async (req, res, next) => {
   }
 };
 
+const QuestionCategoryValidateUpdateGrade = async (req, res, next) => {
+  try {
+    const { grade } = req.body;
 
+    // Tratando se não enviaram a nota para atualizar
+    if (!grade) {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Invalid QuestionCategory data",
+        details: {
+          cause: "The grade is required",
+        },
+      });
+    }
 
-module.exports = {QuestionCategoryValidate, QuestionCategoryValidateID}
+    // Tratando se a nota enviada não for um numero
+    if (typeof grade != "number") {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Invalid QuestionCategory data",
+        details: {
+          cause: "The grade is not number",
+        },
+      });
+    }
+
+    if (grade < 0 || grade > 10) {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Invalid QuestionCategory data",
+        details: {
+          cause: "the grade cannot be negative or greater than 10",
+        },
+      });
+    }
+
+    req.grade = { grade };
+
+    return next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: {
+        code: 500,
+        method: req.method,
+        message: "Error, while valide the QuestionCategoryValidateUpdateGrade",
+        details: {
+          cause: error.message,
+        },
+      },
+    });
+  }
+};
+
+module.exports = {
+  QuestionCategoryValidate,
+  QuestionCategoryValidateID,
+  QuestionCategoryValidateUpdateGrade,
+};

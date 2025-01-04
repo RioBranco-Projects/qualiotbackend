@@ -5,9 +5,9 @@ const CategoryService = require("./category-service");
 const QuestionCategoryService = {
   create: async (dataQuestionCategory) => {
     try {
-      // title, annouced, _idCategory
+      const limitQuestion = 5;
 
-      console.log("data aq", dataQuestionCategory);
+      // Validando se a categoria existe
       const category = await Category.findById(
         dataQuestionCategory._idCategory
       );
@@ -20,6 +20,22 @@ const QuestionCategoryService = {
         };
       }
 
+      // Validando se ja excedeu o limite de questões
+      const questionsLength = await QuestionCategory.countDocuments({
+        _idCategory: category._id,
+      });
+      console.log(questionsLength);
+
+      if (questionsLength >= 5) {
+        return {
+          code: 400,
+          error: {
+            message: "question limit exceeded",
+          },
+        };
+      }
+
+      // Criando a questão
       const questionCategory = await QuestionCategory.create(
         dataQuestionCategory
       );
@@ -123,6 +139,7 @@ const QuestionCategoryService = {
         _id: question._id,
         title: question.title,
         announced: question.announced,
+        grade: question.grade,
         category: category.category,
       };
 
@@ -191,6 +208,33 @@ const QuestionCategoryService = {
         code: 200,
         message: "Question deleted with success",
         questionCategory: question,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  updateGrade: async (_idQuestion, dataUpdate) => {
+    try {
+      // Procurando a questão
+      const question = await QuestionCategory.findById(_idQuestion);
+
+      // Se não achar a questão, devolver mensagem de erro
+      if (!question) {
+        return {
+          code: 404,
+          error: {
+            message: "Question not found",
+          },
+        };
+      }
+
+      const questionUpdated = await question.updateOne(dataUpdate);
+
+      return {
+        code: 200,
+        message: "Question updated",
+        questionCategory: questionUpdated,
       };
     } catch (error) {
       console.error(error);
