@@ -25,7 +25,7 @@ const UserService = {
           email: user.email,
         },
         process.env.SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "21h" }
       );
 
       return {

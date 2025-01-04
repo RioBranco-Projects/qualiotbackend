@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const QuestionCategory = require("../models/QuestionCategory");
+const { isMongoID } = require("../utils/ValidationsUtils");
 const CategoryService = require("./category-service");
 
 const QuestionCategoryService = {
@@ -39,6 +40,16 @@ const QuestionCategoryService = {
       const questionCategory = await QuestionCategory.create(
         dataQuestionCategory
       );
+
+      // Atualizando a media da categoria
+      const updateFinalGrade = await QuestionCategoryService.updateFinalGrade(
+        questionCategory._idCategory
+        // 2
+      );
+
+      if (updateFinalGrade.error) {
+        return updateFinalGrade;
+      }
 
       return {
         code: 201,
@@ -192,6 +203,7 @@ const QuestionCategoryService = {
   },
   delete: async (_idQuestionCategory) => {
     try {
+      // Validando se a questão existe
       const question = await QuestionCategory.findById(_idQuestionCategory);
       if (!question) {
         return {
@@ -202,7 +214,16 @@ const QuestionCategoryService = {
         };
       }
 
+      // Deletando a questão
       await question.deleteOne();
+
+      // Atualizando a finalGrade da categoria
+      const updateFinalGrade = await QuestionCategoryService.updateFinalGrade(
+        question._idCategory
+      );
+      if (updateFinalGrade.error) {
+        return updateFinalGrade;
+      }
 
       return {
         code: 200,
@@ -217,19 +238,25 @@ const QuestionCategoryService = {
   updateGrade: async (_idQuestion, dataUpdate) => {
     try {
       // Procurando a questão
-      const question = await QuestionCategory.findById(_idQuestion);
+      const question = await QuestionCategoryService.getOne(_idQuestion, true);
 
       // Se não achar a questão, devolver mensagem de erro
       if (!question) {
-        return {
-          code: 404,
-          error: {
-            message: "Question not found",
-          },
-        };
+        return question;
       }
 
-      const questionUpdated = await question.updateOne(dataUpdate);
+      // Atualizando a questão
+      const questionUpdated = await QuestionCategory.findByIdAndUpdate(
+        _idQuestion,
+        dataUpdate
+      );
+
+      const updateFinalGrade = await QuestionCategoryService.updateFinalGrade(
+        question.questionCategory._idCategory
+      );
+      if (updateFinalGrade.error) {
+        return updateFinalGrade;
+      }
 
       return {
         code: 200,
@@ -240,6 +267,66 @@ const QuestionCategoryService = {
       console.error(error);
       throw new Error(error.message);
     }
+  },
+  updateFinalGrade: async (_idCategory) => {
+    // Validando se foi enviado o id da categoria
+    if (!_idCategory) {
+      return {
+        code: 400,
+        error: {
+          message: "The _idCategory is required",
+        },
+      };
+    }
+
+    // Validar se e um idMongo
+    const isIdValid = await isMongoID(_idCategory);
+    if (isIdValid.error) {
+      return {
+        code: 400,
+        error: {
+          message: "The id sent is not a mongoId",
+        },
+      };
+    }
+
+    // Variavel para manipular a nota final da categoria
+    var gradeFinalCategory = 0;
+
+    // Pegando todas as questões da categoria
+    const allQuestions = await QuestionCategory.find({
+      _idCategory: _idCategory,
+    });
+    // Percorrendo o array das questões para pegar a nota de cada uma questão
+    for (const question of allQuestions) {
+      // Se não tiver nota, atribuir o valor de 0
+      if (!question.grade) {
+        question.grade = 0;
+      }
+      // Somando a nota final
+      gradeFinalCategory += question.grade;
+    }
+
+    // Dividindo a nota para o numero de questões que tem
+    gradeFinalCategory = gradeFinalCategory / allQuestions.length;
+
+    console.log("All Grade", gradeFinalCategory.toFixed(2));
+
+    console.log(_idCategory);
+
+    // Alterando a media da categoria
+    const categoryUpdate = await Category.findById(
+      _idCategory
+      // { finalGrade: gradeFinalCategory.toFixed(2) }
+    );
+    await categoryUpdate.updateOne({
+      finalGrade: gradeFinalCategory.toFixed(2),
+    });
+    console.log(categoryUpdate);
+    return {
+      code: 200,
+      message: "finalGrade update",
+    };
   },
 };
 

@@ -55,6 +55,7 @@ const QuestionCategoryValidate = (req, res, next) => {
       title,
       announced,
       _idCategory,
+      grade: 0,
     };
 
     return next();
@@ -120,7 +121,7 @@ const QuestionCategoryValidateUpdateGrade = async (req, res, next) => {
     const { grade } = req.body;
 
     // Tratando se não enviaram a nota para atualizar
-    if (!grade) {
+    if (grade == null) {
       return res.status(400).json({
         code: 400,
         method: req.method,
