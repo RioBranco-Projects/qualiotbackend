@@ -25,7 +25,7 @@ const UserService = {
           email: user.email,
         },
         process.env.SECRET,
-        { expiresIn: "21h" }
+        { expiresIn: "5h" }
       );
 
       return {
@@ -153,7 +153,7 @@ const UserService = {
           _id: user._id,
         },
         process.env.SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "5h" }
       );
 
       return {

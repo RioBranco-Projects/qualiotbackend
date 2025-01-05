@@ -2,12 +2,12 @@ const Category = require("../models/Category");
 const QuestionCategory = require("../models/QuestionCategory");
 const { isMongoID } = require("../utils/ValidationsUtils");
 const CategoryService = require("./category-service");
+const ProductService = require("./product-service");
 
 const QuestionCategoryService = {
   create: async (dataQuestionCategory) => {
     try {
       const limitQuestion = 5;
-
       // Validando se a categoria existe
       const category = await Category.findById(
         dataQuestionCategory._idCategory
@@ -25,7 +25,6 @@ const QuestionCategoryService = {
       const questionsLength = await QuestionCategory.countDocuments({
         _idCategory: category._id,
       });
-      console.log(questionsLength);
 
       if (questionsLength >= 5) {
         return {
@@ -176,6 +175,7 @@ const QuestionCategoryService = {
           },
         };
       }
+
       if (dataUpdate._idCategory) {
         // Validar se existe a categoria
         const category = await Category.findById(dataUpdate._idCategory);
@@ -189,6 +189,7 @@ const QuestionCategoryService = {
         }
       }
 
+      // Atualizar a questão
       await question.updateOne(dataUpdate);
 
       return {
@@ -241,7 +242,7 @@ const QuestionCategoryService = {
       const question = await QuestionCategoryService.getOne(_idQuestion, true);
 
       // Se não achar a questão, devolver mensagem de erro
-      if (!question) {
+      if (question.error) {
         return question;
       }
 
@@ -250,7 +251,7 @@ const QuestionCategoryService = {
         _idQuestion,
         dataUpdate
       );
-
+      console.log(question);
       const updateFinalGrade = await QuestionCategoryService.updateFinalGrade(
         question.questionCategory._idCategory
       );
@@ -290,6 +291,17 @@ const QuestionCategoryService = {
       };
     }
 
+    //Validar se existe a categoria
+    const category = await Category.findById(_idCategory);
+    if (!category) {
+      return {
+        code: 404,
+        error: {
+          message: "Category not found",
+        },
+      };
+    }
+
     // Variavel para manipular a nota final da categoria
     var gradeFinalCategory = 0;
 
@@ -308,21 +320,21 @@ const QuestionCategoryService = {
     }
 
     // Dividindo a nota para o numero de questões que tem
-    gradeFinalCategory = gradeFinalCategory / allQuestions.length;
+    gradeFinalCategory /= allQuestions.length;
 
-    console.log("All Grade", gradeFinalCategory.toFixed(2));
-
-    console.log(_idCategory);
-
-    // Alterando a media da categoria
-    const categoryUpdate = await Category.findById(
-      _idCategory
-      // { finalGrade: gradeFinalCategory.toFixed(2) }
-    );
-    await categoryUpdate.updateOne({
+    // Atualizando a nota da categoria
+    await category.updateOne({
       finalGrade: gradeFinalCategory.toFixed(2),
     });
-    console.log(categoryUpdate);
+
+    // Atualizar a nota do produto
+    const updateFinalGrade = await ProductService.updateFinalGrade(
+      category._idProduct
+    );
+
+    if (updateFinalGrade.error) {
+      return updateFinalGrade;
+    }
     return {
       code: 200,
       message: "finalGrade update",

@@ -2,6 +2,8 @@ const Category = require("../models/Category");
 const Product = require("../models/Product");
 const QuestionCategory = require("../models/QuestionCategory");
 const User = require("../models/User");
+const { isMongoID } = require("../utils/ValidationsUtils");
+const CategoryService = require("./category-service");
 
 const ProductService = {
   create: async (data, idUsuario) => {
@@ -159,6 +161,7 @@ const ProductService = {
         const categoryCreated = await Category.create({
           _idProduct: product._id,
           name: category.category,
+          finalGrade: 0,
         });
 
         // Percorrendo o array das questões
@@ -168,6 +171,7 @@ const ProductService = {
             title: questions.title,
             announced: questions.announced,
             _idCategory: categoryCreated._id,
+            grade: 0,
           });
         }
       }
@@ -248,6 +252,7 @@ const ProductService = {
           },
         };
       }
+
       if (details !== "true") {
         return {
           code: 200,
@@ -337,6 +342,72 @@ const ProductService = {
         message: "Product deleted",
         product: product,
       };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  updateFinalGrade: async (_idProduct) => {
+    try {
+      // Validando se foi enviado o id da categoria
+      if (!_idProduct) {
+        return {
+          code: 400,
+          error: {
+            message: "The _idProduct is required",
+          },
+        };
+      }
+
+      // Validar se e um idMongo
+      const isIdValid = await isMongoID(_idProduct.toString());
+      if (isIdValid.error) {
+        return {
+          code: 400,
+          error: {
+            message: "The id sent is not a mongoId",
+          },
+        };
+      }
+
+      // Validar se o produto existe
+      const product = await Product.findById(_idProduct);
+      if (!product) {
+        return {
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+
+      // Pegar a nota de todas as categorias
+      const allCategorys = await CategoryService.getByProduct(_idProduct, true);
+
+      // Variavel para manipular todas as notas da categoria
+      var finalGradeCategorys = 0;
+
+      for (const category of allCategorys.category) {
+        // Se a nota não tiver definida, definir para 0
+        if (category.finalGrade == null) {
+          category.finalGrade = 0;
+        }
+        // Fazendo a soma para saber o total da nota
+        finalGradeCategorys += category.finalGrade;
+      }
+
+      // Dividindo para o numero de categorias, para ter a media
+      finalGradeCategorys /= allCategorys.category.length;
+
+      // Atualizar a media da nota do produto
+      await product.updateOne({
+        finalGrade: finalGradeCategorys.toFixed(2),
+      });
+      return {
+        code: 200,
+        message: "Product finalGrade updated",
+      };
+      console.log(finalGradeCategorys.toFixed(2));
     } catch (error) {
       console.error(error);
       throw new Error(error.message);

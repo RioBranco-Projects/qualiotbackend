@@ -5,9 +5,6 @@ const User = require("../models/User");
 const CategoryService = {
   create: async (dataCategory, user) => {
     try {
-
-      
-
       // Validar se o produto existe
       const product = await Produto.findById(dataCategory._idProduct);
       if (!product) {
@@ -50,7 +47,6 @@ const CategoryService = {
 
       const category = await Category.create(dataCategory);
 
-      
       return {
         code: 201,
         message: "Category created",
@@ -197,6 +193,7 @@ const CategoryService = {
   },
   delete: async (_idCategory, user) => {
     try {
+      // Validando se existe a categoria
       const category = await Category.findById(_idCategory);
       if (!category) {
         return {
@@ -207,6 +204,7 @@ const CategoryService = {
         };
       }
 
+      // Validando se existe o produto
       const product = await Produto.findById(category._idProduct);
       if (!product) {
         return {
@@ -217,6 +215,7 @@ const CategoryService = {
         };
       }
 
+      // Validando se o id do produto a ser deletado, pertence ao token da pessoa
       if (product._idUser !== user._id) {
         return {
           code: 401,
@@ -226,7 +225,20 @@ const CategoryService = {
         };
       }
 
+      // Deletando a categoria
       await category.deleteOne();
+
+      // Atualizar a nota final do produto
+      const ProductService = require("./product-service");
+
+      // Atualizar a nota do produto
+      const updateFinalGrade = await ProductService.updateFinalGrade(
+        category._idProduct
+      );
+
+      if (updateFinalGrade.error) {
+        return updateFinalGrade;
+      }
 
       return {
         code: 200,
