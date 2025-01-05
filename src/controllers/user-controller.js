@@ -39,7 +39,7 @@ const UserController = {
   },
   getAll: async (req, res) => {
     try {
-      const user = await UserService.getAll(req.user);
+      const user = await UserService.getAll();
 
       if (user.error) {
         return res.status(user.code).json({
@@ -175,18 +175,18 @@ const UserController = {
         user: user.user,
       });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-          error: {
-            code: 500,
-            method: req.method,
-            message: "Error, while delete the user",
-            details: {
-              controller: "UserController",
-              cause: error.message,
-            },
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while delete the user",
+          details: {
+            controller: "UserController",
+            cause: error.message,
           },
-        });
+        },
+      });
     }
   },
   login: async (req, res) => {

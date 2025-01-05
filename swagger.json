@@ -1,0 +1,244 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "api qualiot",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://qualiotbackend.onrender.com",
+      "description": "Essa url e da api no onRender"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Cadastro de usuarios",
+        "description": "Essa rota sera responsavel por cadastrar um novo usuario",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "name": "João Vitor",
+                    "email": "joaovitor123@gmail.com",
+                    "password": "joaovitor1234@"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Má requisição"
+          },
+          "409": {
+            "description": "Email ja cadastrado"
+          },
+          "500": {
+            "description": "Erro interno"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Busca de usuarios",
+        "description": "Essa rota sera responsavel por fazer uma busca geral de usuarios",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/users/:id": {
+      "get": {
+        "summary": "Cadastro de usuarios",
+        "description": "Essa rota sera responsavel por cadastrar um novo usuario",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "parameter",
+            "description": "id do usuario para busca",
+            "required": true
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Má requisição"
+          },
+          "404": {
+            "description": "Não achado"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar usuarios",
+        "description": "Essa rota sera responsavel por atualizar um usuario",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "parameter",
+            "description": "id do usuario para atualizar",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "name": "João Vitor",
+                    "email": "joaovitor123@gmail.com",
+                    "password": "joaovitor1234@"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar usuario",
+        "description": "Rota responsavel por deletar um usuario",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "parameter",
+            "description": "id do usuario para deletar",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/products": {
+      "post": {
+        "summary": "Cadastro de produtos",
+        "description": "Essa rota sera responsavel por cadastrar um novo produto",
+        "tags": ["Products"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": 200
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "finalGrade": {
+            "type": "number"
+          },
+          "_idUser": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "authenticateHeader": {
+        "type": "apiKey",
+        "in" : "header",
+        "name": "Authenticate"
+      }
+    }
+  },
+  "security": [
+    {
+      "authenticateHeader": []
+    }
+  ]
+}

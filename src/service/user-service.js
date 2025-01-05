@@ -8,7 +8,7 @@ const UserService = {
       const existEmail = await User.findOne({ email: dataUser.email });
       if (existEmail) {
         return {
-          code: 400,
+          code: 409,
           error: {
             message: "Email already exists",
           },
