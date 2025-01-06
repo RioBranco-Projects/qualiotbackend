@@ -229,7 +229,7 @@
         },
         "responses": {
           "200": {
-            "description": 200
+            "description": "OK"
           }
         }
       },
@@ -248,6 +248,193 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "summary": "Busca unica de produto",
+        "description": "Essa rota sera responsavel por pegar um produto pelo id",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id do produto para fazer a busca",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar produto",
+        "description": "Essa rota sera responsavel por atualizar um produto",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id do produto para fazer a busca e atualizar",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              },
+              "examples": {
+                "product": {
+                  "value": {
+                    "name": "Samsung Galaxy S24",
+                    "description": "Super celular pai"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar produto",
+        "description": "Rota responsavel por deletar um produto",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id do produto para deletar",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/categorys": {
+      "post": {
+        "summary": "Cadastro de categorias de um produto",
+        "description": "Essa rota sera responsavel por cadastrar uma nova categoria",
+        "tags": ["Category"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              },
+              "examples": {
+                "category": {
+                  "value": {
+                    "name": "Categoria teste",
+                    "_idProduct": "677c04e9df158e5f5bbbaa58"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/categorys/get-by-product/{id}": {
+      "get": {
+        "summary": "Busca de categorias",
+        "description": "Essa rota sera responsavel por buscar todos as categorias de um produto",
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id do produto para pegar todas as categorias ",
+            "required": true
+          },
+          {
+            "name": "details",
+            "in": "query",
+            "description": "Se o usuario quiser mais detalhes da busca, enviar true",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/categorys/{id}": {
+      "get": {
+        "summary": "Busca unica de categoria",
+        "description": "Essa rota sera responsavel por pegar uma unica categoria por id",
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da categoria para buscar",
+            "required": true
+          },
+          {
+            "name": "details",
+            "in": "query",
+            "description": "Se o usuario quiser mais detalhes da busca, enviar true",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": 200
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Atualizar categoria",
+        "description" : "Essa rota sera responsavel por atualizar uma categoria",
+        "tags" : ["Category"],
+        "parameters" : [{
+          "name" : "id",
+          "in" : "path",
+          "description" : "id da categoria para buscar e atualizar",
+          "required" : true
+        }],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Category"
+              },
+              "examples" : {
+                "category" : {
+                  "value" : {
+                    "name" : "Categoria teste update",
+                    "_idProduct" : "677c04e9df158e5f5bbbaa58"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
           }
         }
       }
@@ -282,6 +469,17 @@
             "type": "number"
           },
           "_idUser": {
+            "type": "string"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "_idProduct": {
             "type": "string"
           }
         }

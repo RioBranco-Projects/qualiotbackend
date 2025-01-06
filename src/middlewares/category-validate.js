@@ -43,6 +43,7 @@ const CategoryValidate = async (req, res, next) => {
     req.category = {
       name,
       _idProduct,
+      finalGrade : 0
     };
 
     return next();

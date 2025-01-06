@@ -177,7 +177,7 @@ const ProductService = {
       }
       return {
         code: 201,
-        message: "Product created",
+        message: "Product,categorys and questions created",
         product: product,
       };
     } catch (error) {

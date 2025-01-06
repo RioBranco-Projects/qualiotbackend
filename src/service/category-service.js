@@ -45,6 +45,22 @@ const CategoryService = {
         };
       }
 
+      // Validar se tem o limite de categorias ja foi excedido
+      const limitCategory = 10;
+
+      const countCategory = await Category.countDocuments({
+        _idProduct: product._id,
+      });
+
+      if (countCategory >= limitCategory) {
+        return {
+          code: 400,
+          error: {
+            message: "category limit exceeded",
+          },
+        };
+      }
+
       const category = await Category.create(dataCategory);
 
       return {
