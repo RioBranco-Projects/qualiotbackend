@@ -144,7 +144,12 @@ const UserService = {
       });
 
       if (!user) {
-        return null;
+        return {
+          code: 401,
+          error: {
+            message: "Invalid credentials",
+          },
+        };
       }
 
       const token = await jwt.sign(
@@ -157,8 +162,9 @@ const UserService = {
       );
 
       return {
+        code : 200,
         token,
-        nome: user.nome,
+        name: user.name,
       };
     } catch (error) {
       console.error(error);

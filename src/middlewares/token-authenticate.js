@@ -1,28 +1,28 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-const TokenAuthenticate = (req,res,next) => {
+const TokenAuthenticate = (req, res, next) => {
+  const token = req.headers.authorization;
 
-    const token = req.headers.authorization
+  if (!token) {
+    return res.status(401).json({
+      msg: "login não autorizado",
+    });
+  }
 
-    if(!token){
+  jwt.verify(
+    token.split(" ")[1] || token.split(" ")[0],
+    process.env.SECRET,
+    (err, user) => {
+      if (err) {
         return res.status(401).json({
-            msg : "login não autorizado"
-        })
+          msg: "Acesso negado",
+        });
+      }
+
+      req.user = user;
+      return next();
     }
+  );
+};
 
-    jwt.verify(token, process.env.SECRET, (err,user) => {
-        if(err){
-            return res.status(401).json({
-                msg : "Acesso negado"
-            })
-        }
-
-        req.user = user;
-        return next();
-    })
-
-    
-}
-
-
-module.exports = TokenAuthenticate
+module.exports = TokenAuthenticate;

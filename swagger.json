@@ -8,6 +8,10 @@
     {
       "url": "https://qualiotbackend.onrender.com",
       "description": "Essa url e da api no onRender"
+    },
+    {
+      "url": "http://localhost:8081",
+      "description": "Essa url e do servidor local para testes"
     }
   ],
   "paths": {
@@ -71,15 +75,15 @@
         }
       }
     },
-    "/users/:id": {
+    "/users/{id}": {
       "get": {
-        "summary": "Cadastro de usuarios",
-        "description": "Essa rota sera responsavel por cadastrar um novo usuario",
+        "summary": "Pegar usuario",
+        "description": "Essa rota sera responsavel por pegar um usuario pelo id",
         "tags": ["Users"],
         "parameters": [
           {
             "name": "id",
-            "in": "parameter",
+            "in": "path",
             "description": "id do usuario para busca",
             "required": true
           }
@@ -115,7 +119,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "parameter",
+            "in": "path",
             "description": "id do usuario para atualizar",
             "required": true
           }
@@ -159,11 +163,40 @@
         "parameters": [
           {
             "name": "id",
-            "in": "parameter",
+            "in": "path",
             "description": "id do usuario para deletar",
             "required": true
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "Login de usuarios",
+        "description": "Essa rota sera responsavel por logar um usuario",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "email": "joaovitor123@gmail.com",
+                    "password": "joaovitor1234@"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -182,6 +215,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Product"
+              },
+              "examples": {
+                "product": {
+                  "value": {
+                    "name": "Samsung Galaxy S24",
+                    "description": "Super celular pai"
+                  }
+                }
               }
             }
           }
@@ -189,6 +230,24 @@
         "responses": {
           "200": {
             "description": 200
+          }
+        }
+      },
+      "get": {
+        "summary": "Busca de produtos",
+        "description": "Essa rota sera responsavel por buscar todos os produtos do usuario",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "details",
+            "in": "query",
+            "description": "Se o usuario quiser mais detalhes da busca, enviar true",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -229,16 +288,16 @@
       }
     },
     "securitySchemes": {
-      "authenticateHeader": {
-        "type": "apiKey",
-        "in" : "header",
-        "name": "Authenticate"
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },
   "security": [
     {
-      "authenticateHeader": []
+      "bearerAuth": []
     }
   ]
 }

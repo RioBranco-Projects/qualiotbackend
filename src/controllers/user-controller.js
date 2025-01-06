@@ -111,10 +111,11 @@ const UserController = {
   },
   update: async (req, res) => {
     try {
-      const { nome, email, password } = req.body;
+      console.log("teste");
+      const { name, email, password } = req.body;
       const { id } = req.params;
       const data = {
-        nome: nome,
+        name: name,
         email: email,
         password: password,
       };
@@ -198,15 +199,24 @@ const UserController = {
 
       const userLogin = await UserService.login(data);
 
-      if (!userLogin) {
-        return res.status(401).json({
-          msg: "Não cadastrado",
+      if (userLogin.error) {
+        return res.status(userLogin.code).json({
+          code: userLogin.code,
+          message: "Error, while try login user",
+          details: {
+            controller: "UserController",
+            cause: userLogin.error.message,
+          },
         });
       }
 
-      return res.status(200).json({
-        msg: "Login feito com sucesso",
-        userLogin,
+      return res.status(userLogin.code).json({
+        code: userLogin.code,
+        message: "Login feito com sucesso",
+        userLogin: {
+          token: userLogin.token,
+          name: userLogin.name,
+        },
       });
     } catch (error) {
       console.error(error);
