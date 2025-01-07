@@ -532,12 +532,14 @@
         "summary": "Atualizar questão",
         "description": "Essa rota sera responsavel por atualizar uma questão da categoria",
         "tags": ["Question"],
-        "parameters" : [{
-          "name" : "id",
-          "in" : "path",
-          "description" : "id da questão para atualizar",
-          "required" : true
-        }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da questão para atualizar",
+            "required": true
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -566,12 +568,14 @@
         "summary": "Deletar questão",
         "description": "Essa rota sera responsavel por deletar uma questão da categoria",
         "tags": ["Question"],
-        "parameters" : [{
-          "name" : "id",
-          "in" : "path",
-          "description" : "id da questão para deletar",
-          "required" : true
-        }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da questão para deletar",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -582,12 +586,14 @@
         "summary": "Atualizar nota da questão",
         "description": "Essa rota sera responsavel por atualizar uma nota da questão da categoria",
         "tags": ["Question"],
-        "parameters" : [{
-          "name" : "id",
-          "in" : "path",
-          "description" : "id da questão para atualizar",
-          "required" : true
-        }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da questão para atualizar",
+            "required": true
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -604,6 +610,128 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/justifications/": {
+      "post": {
+        "summary": "Criar justificativa",
+        "description": "Essa rota será responsavel por criar uma justificativa de uma questão",
+        "tags": ["Justification"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JustificationQuestion"
+              },
+              "examples": {
+                "justification": {
+                  "value": {
+                    "justification": "Aqui vai ficar a justificativa da nota da questão",
+                    "_idQuestionCategory": "Aqui vai ficar o _id da questão respondida"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/justifications/get-by-question/{id}": {
+      "get": {
+        "summary": "Busca de justificativa por questão",
+        "description": "Essa rota será responsavel por buscar uma justificativa de uma questão",
+        "tags": ["Justification"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da questão para buscar a justificativa",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/justifications/{id}": {
+      "get": {
+        "summary": "Busca de justificativa por _id",
+        "description": "Essa rota será responsavel por buscar uma justificativa por um _id",
+        "tags": ["Justification"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da justicativa para fazer uma busca",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar justificativa",
+        "description": "Essa rota sera responsavel por atualizar uma justificativa de uma questão",
+        "tags": ["Justification"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da justificativa para atualizar",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JustificationQuestion"
+              },
+              "examples": {
+                "justification": {
+                  "value": {
+                    "justification": "Aqui vai ficar a justificativa da nota da questão",
+                    "_idQuestionCategory": "Aqui vai ficar o _id da questão respondida"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar justificativa",
+        "description": "Essa rota sera responsavel por deletar uma justificativa de uma questão",
+        "tags": ["Justification"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da justificativa para deletar",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -666,6 +794,17 @@
             "type": "string"
           },
           "_idCategory": {
+            "type": "string"
+          }
+        }
+      },
+      "JustificationQuestion": {
+        "type": "object",
+        "properties": {
+          "justification": {
+            "type": "string"
+          },
+          "_idQuestionCategory": {
             "type": "string"
           }
         }
