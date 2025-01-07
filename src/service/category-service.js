@@ -178,35 +178,36 @@ const CategoryService = {
         // Validar se as categorias do produto ja excederam o limite maximo
 
         // Validar se tem o limite de categorias ja foi excedido
-      const limitCategory = 10;
+        const limitCategory = 10;
 
-      const countCategory = await Category.countDocuments({
-        _idProduct: product._id,
-      });
-
-      if (countCategory >= limitCategory) {
-        return {
-          code: 400,
-          error: {
-            message: "category limit exceeded",
-          },
-        };
-      }
-      }
-
-      if (dataUpdate.name) {
-        const existsThisName = await Category.findOne({
-          _idProduct: category._idProduct,
-          name: dataUpdate.name,
+        const countCategory = await Category.countDocuments({
+          _idProduct: product._id,
         });
 
-        if (existsThisName) {
+        if (countCategory >= limitCategory) {
           return {
-            code: 404,
+            code: 400,
             error: {
-              message: "Name already created",
+              message: "category limit exceeded",
             },
           };
+        }
+        if (dataUpdate.name) {
+          const existsThisName = await Category.findOne({
+            _idProduct: product._id,
+            name: dataUpdate.name,
+          });
+
+          console.log(existsThisName);
+
+          if (existsThisName) {
+            return {
+              code: 404,
+              error: {
+                message: "Name already created",
+              },
+            };
+          }
         }
       }
 
