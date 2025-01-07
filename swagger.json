@@ -527,6 +527,88 @@
             "description": "OK"
           }
         }
+      },
+      "put": {
+        "summary": "Atualizar questão",
+        "description": "Essa rota sera responsavel por atualizar uma questão da categoria",
+        "tags": ["Question"],
+        "parameters" : [{
+          "name" : "id",
+          "in" : "path",
+          "description" : "id da questão para atualizar",
+          "required" : true
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionCategory"
+              },
+              "examples": {
+                "question": {
+                  "value": {
+                    "title": "titulo da questao",
+                    "announced": "anunciado da questão",
+                    "_idCategory": "677c04e9df158e5f5bbbaa62"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar questão",
+        "description": "Essa rota sera responsavel por deletar uma questão da categoria",
+        "tags": ["Question"],
+        "parameters" : [{
+          "name" : "id",
+          "in" : "path",
+          "description" : "id da questão para deletar",
+          "required" : true
+        }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Atualizar nota da questão",
+        "description": "Essa rota sera responsavel por atualizar uma nota da questão da categoria",
+        "tags": ["Question"],
+        "parameters" : [{
+          "name" : "id",
+          "in" : "path",
+          "description" : "id da questão para atualizar",
+          "required" : true
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionCategory"
+              },
+              "examples": {
+                "question": {
+                  "value": {
+                    "grade": 8
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     }
   },
