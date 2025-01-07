@@ -405,36 +405,126 @@
           }
         }
       },
-      "put" : {
-        "summary" : "Atualizar categoria",
-        "description" : "Essa rota sera responsavel por atualizar uma categoria",
-        "tags" : ["Category"],
-        "parameters" : [{
-          "name" : "id",
-          "in" : "path",
-          "description" : "id da categoria para buscar e atualizar",
-          "required" : true
-        }],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/Category"
+      "put": {
+        "summary": "Atualizar categoria",
+        "description": "Essa rota sera responsavel por atualizar uma categoria",
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da categoria para buscar e atualizar",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
               },
-              "examples" : {
-                "category" : {
-                  "value" : {
-                    "name" : "Categoria teste update",
-                    "_idProduct" : "677c04e9df158e5f5bbbaa58"
+              "examples": {
+                "category": {
+                  "value": {
+                    "name": "Categoria teste update",
+                    "_idProduct": "677c04e9df158e5f5bbbaa58"
                   }
                 }
               }
             }
           }
         },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletar categoria",
+        "description": "Essa rota será responsavel por deletar uma categoria",
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da categoria para buscar e deletar",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/questions": {
+      "post": {
+        "summary": "Cadastro de questões",
+        "description": "Essa rota sera responsavel por cadastrar uma nova questão da categoria",
+        "tags": ["Question"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionCategory"
+              },
+              "examples": {
+                "question": {
+                  "value": {
+                    "title": "titulo da questao",
+                    "announced": "anunciado da questão",
+                    "_idCategory": "677c04e9df158e5f5bbbaa62"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/questions/get-by-category/{id}": {
+      "get": {
+        "summary": "Busca de questões por categorias",
+        "description": "Essa rota sera responsavel por buscar todas as questões por uma questão",
+        "tags": ["Question"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da categoria para buscar as questões",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/questions/{id}": {
+      "get": {
+        "summary": "Busca de uma unica questão",
+        "description": "Essa rota sera responsvel por buscar uma questão por id",
+        "tags": ["Question"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da categoria para buscar as questões",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -480,6 +570,20 @@
             "type": "string"
           },
           "_idProduct": {
+            "type": "string"
+          }
+        }
+      },
+      "QuestionCategory": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "announced": {
+            "type": "string"
+          },
+          "_idCategory": {
             "type": "string"
           }
         }

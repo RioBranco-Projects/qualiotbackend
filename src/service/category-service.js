@@ -192,6 +192,7 @@ const CategoryService = {
             },
           };
         }
+        // Se Pedirem para atualizar o produto e o nome, validar se o produto tem alguma categoria com esse nome
         if (dataUpdate.name) {
           const existsThisName = await Category.findOne({
             _idProduct: product._id,
@@ -208,6 +209,23 @@ const CategoryService = {
               },
             };
           }
+        }
+      }
+
+      // Validar se ja existe esse nome
+      if (dataUpdate.name) {
+        const existsThisName = await Category.findOne({
+          _idProduct: category._idProduct,
+          name: dataUpdate.name,
+        });
+
+        if (existsThisName) {
+          return {
+            code: 404,
+            error: {
+              message: "Name already created",
+            },
+          };
         }
       }
 
