@@ -399,10 +399,25 @@ const ProductService = {
       // Dividindo para o numero de categorias, para ter a media
       finalGradeCategorys /= allCategorys.category.length;
 
+      // Calcular a proeficiencia
+      let proficiency;
+      const finalGrade = finalGradeCategorys.toFixed(2);
+      if (finalGrade < 5) {
+        proficiency = "Baixa";
+      } else if (finalGrade > 8) {
+        proficiency = "Alta";
+      } else {
+        proficiency = "Media";
+      }
+
       // Atualizar a media da nota do produto
       await product.updateOne({
-        finalGrade: finalGradeCategorys.toFixed(2),
+        finalGrade: finalGrade,
+        proficiency: proficiency,
       });
+
+      // Atualizar a proeficiencia
+
       return {
         code: 200,
         message: "Product finalGrade updated",

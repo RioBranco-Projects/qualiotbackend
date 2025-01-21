@@ -15,6 +15,10 @@ const produtoSchema = new Schema({
     type: Number,
     required: false,
   },
+  proficiency: {
+    type: String,
+    required: false,
+  },
   _idUser: {
     type: String,
     required: true,

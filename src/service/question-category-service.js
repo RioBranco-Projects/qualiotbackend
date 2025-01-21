@@ -239,8 +239,8 @@ const QuestionCategoryService = {
   updateGrade: async (_idQuestion, dataUpdate) => {
     try {
       // Procurando a questão
-      const question = await QuestionCategoryService.getOne(_idQuestion, true);
-
+      const question = await QuestionCategoryService.getOne(_idQuestion, {false :false});
+      console.log(_idQuestion)
       // Se não achar a questão, devolver mensagem de erro
       if (question.error) {
         return question;
