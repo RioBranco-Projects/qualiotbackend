@@ -15,6 +15,9 @@ router.post("/", TokenAuthenticate, ProductValidate, ProductController.create);
 // GetAll produto
 router.get("/", TokenAuthenticate, ProductController.getAll);
 
+// GetRelatorio
+router.get("/relatorio/:id", TokenAuthenticate, ProductController.getRelatorio);
+
 // GetOne produto
 router.get(
   "/:id",

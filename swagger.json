@@ -325,6 +325,26 @@
         }
       }
     },
+    "/products/relatorio/{id}": {
+      "get": {
+        "summary": "Pegar o relatorio do produto",
+        "description": "Essa rota será responsavel por pegar o relatorio do produto",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id do produto para gerar o relatorio",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/categorys": {
       "post": {
         "summary": "Cadastro de categorias de um produto",

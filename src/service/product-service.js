@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const JustificationQuestion = require("../models/JustificationQuestion");
 const Product = require("../models/Product");
 const QuestionCategory = require("../models/QuestionCategory");
 const User = require("../models/User");
@@ -423,6 +424,110 @@ const ProductService = {
         message: "Product finalGrade updated",
       };
       console.log(finalGradeCategorys.toFixed(2));
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  getRelatorio: async (_idProduct) => {
+    try {
+      const product = await Product.findById(_idProduct);
+      if (!product) {
+        return {
+          code: 404,
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+
+      // Pegando os dados do usuario
+      const user = await User.findById(product._idUser);
+      if (!user) {
+        return {
+          code: 404,
+          error: {
+            message: "user not found",
+          },
+        };
+      }
+
+      // Pegando todas as categorias
+      const categorys = await Category.find({ _idProduct: product._id });
+      const categorysDetails = [];
+      for (const category of categorys) {
+        // Pegando todas as questões da categoria
+        const questions = await QuestionCategory.find({
+          _idCategory: category._id,
+        });
+
+        const questionsDetails = [];
+
+        // Percorrendo cada questão
+        for (const question of questions) {
+          const justification = await JustificationQuestion.find({
+            _idQuestionCategory: question._id,
+          });
+
+          questionsDetails.push({
+            title: question.title,
+            announced: question.announced,
+            grade: question.grade,
+            justication: justification[0] || {},
+          });
+        }
+        categorysDetails.push({
+          name: category.name,
+          finalGrade: category.finalGrade,
+          questions: questionsDetails,
+        });
+      }
+
+      console.log("category", categorysDetails);
+
+      const relatorio = {
+        name: product.name,
+        description: product.description,
+        finalGrade: product.finalGrade,
+        proficiency: product.proficiency,
+        user: user,
+        categorys: categorysDetails,
+      };
+
+      return {
+        code: 200,
+        message: "Relatorio encontrado",
+        relatorio,
+      };
+
+      /*
+      {
+        name,
+        description,
+        finalGrade,
+        proficiency,
+        dataUser,
+        categorys : [
+          {
+          nameCategory,
+          finalGrade,
+          questions : [
+            {
+            title,
+            announced,
+            grade,
+            justification : {
+              justification
+            }
+            }
+          ]
+          }
+        ]
+      }
+
+
+
+      */
     } catch (error) {
       console.error(error);
       throw new Error(error.message);

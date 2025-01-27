@@ -186,6 +186,38 @@ const ProdutoController = {
       });
     }
   },
+  getRelatorio: async (req, res) => {
+    try {
+      const relatorio = await ProductService.getRelatorio(req.params.id);
+      if (relatorio.error) {
+        return res.status(relatorio.code).json({
+          code: relatorio.code,
+          error: {
+            details: relatorio.message,
+          },
+        });
+      }
+
+      return res.status(relatorio.code).json({
+        code: relatorio.code,
+        message: relatorio.message,
+        relatorio: relatorio.relatorio,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while delete the product",
+          details: {
+            controller: "ProductController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
 };
 
 module.exports = ProdutoController;

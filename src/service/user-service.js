@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config();
 const UserService = {
   create: async (dataUser) => {
     try {
@@ -162,7 +162,7 @@ const UserService = {
       );
 
       return {
-        code : 200,
+        code: 200,
         token,
         name: user.name,
       };
