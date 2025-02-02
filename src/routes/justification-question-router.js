@@ -40,6 +40,14 @@ router.put(
   JustificationQuestionController.update
 );
 
+// Update justification with patch
+router.patch(
+  "/:id",
+  TokenAuthenticate,
+  JustificationQuestionValidateID,
+  JustificationQuestionController.patch
+);
+
 // Delete justification
 router.delete(
   "/:id",

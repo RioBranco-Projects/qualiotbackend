@@ -199,6 +199,48 @@ const JustificationQuestionController = {
       });
     }
   },
+  patch: async (req, res) => {
+    try {
+      const data = {
+        justification: req.body.justification,
+      };
+
+      const justificationQuestion = await JustificationQuestionService.update(
+        req.params.id,
+        data
+      );
+
+      if (justificationQuestion.error) {
+        return res.status(justificationQuestion.code).json({
+          code: justificationQuestion.code,
+          message: "Error, while updating the justification question",
+          details: {
+            controller: "JustificationQuestionController",
+            cause: justificationQuestion.error.message,
+          },
+        });
+      }
+
+      return res.status(justificationQuestion.code).json({
+        code: justificationQuestion.code,
+        message: justificationQuestion.message,
+        justificationQuestion: justificationQuestion.justificationQuestion,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while updating the justification question",
+          details: {
+            controller: "JustificationQuestionController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
 };
 
 module.exports = JustificationQuestionController;
